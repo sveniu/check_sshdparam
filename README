@@ -1,0 +1,18 @@
+Nagios plugin for checking remote SSH server parameters
+
+List of parameters that can be checked:
+- Blacklist of user authentication methods
+- List of required user authentication methods
+
+Example invocation:
+  check_sshdparam --host localhost --timeout 5 \
+    --uablacklist password,keyboard-interactive \
+    --uawhitelist publickey
+
+TODO:
+- Host key fingerprint? Or just leave that to known_hosts.
+- Host SSH string? Already done by check_ssh. Not in libssh2.
+
+Built on libssh2 (as opposed to libssh) since it returns the
+server's user auth list as a string. libssh sets flags, and
+has a hardcoded (and brief) list of supported auth methods.
