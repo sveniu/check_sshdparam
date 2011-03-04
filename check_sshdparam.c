@@ -167,6 +167,9 @@ int parse_options(int argc, char **argv)
 void timeout_handler(int sig)
 {
 	dp("Caught signal %d: Timeout!\n", sig);
+	curstate = CRITICAL;
+	sprintf(curstatebuf, "%d second timeout reached", opt_timeout);
+	nagios_exit();
 	return;
 }
 
