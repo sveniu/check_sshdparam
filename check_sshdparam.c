@@ -336,12 +336,15 @@ int main(int argc, char** argv)
 	dp("Successfully connected to %s:%s\n", bufhost, bufport);
 	freeaddrinfo(ai);
 
+        /* libssh2_init and libssh2_exit was introduced in libssh2 1.2.5 */
+#if LIBSSH2_VERSION_NUM >= 0x010205
 	if((rc = libssh2_init(0)) != 0)
 	{
 		curstate = CRITICAL;
 		sprintf(curstatebuf, "libssh2 initialization failed (%d)", rc);
 		nagios_exit();
 	}
+#endif
 
 	session = libssh2_session_init();
 	if(libssh2_session_startup(session, sock) != 0)
@@ -393,7 +396,11 @@ int main(int argc, char** argv)
 	libssh2_session_disconnect(session, "ok");
 	libssh2_session_free(session);
 	close(sock);
+
+#if LIBSSH2_VERSION_NUM >= 0x010205
 	libssh2_exit();
+#endif
+  
 	alarm(0);
 
 	if(curstate == INIT)
